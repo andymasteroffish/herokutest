@@ -18,6 +18,8 @@ var clicks = 0;
 
 io.on('connection', (socket) => {
   console.log('Client connected');
+  io.emit('tellClicks', {num: clicks});	//give it the value when it starts
+
   //socket.on('disconnect', () => socket.on('disconnect', () => ););
   socket.on('disconnect', disconnect);
   
@@ -35,7 +37,7 @@ setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 
 function startup(){
 	console.log(`Listening on ${ PORT }`);
-}
+	}
 
 function disconnect(){
 	console.log('Client disconnected')
