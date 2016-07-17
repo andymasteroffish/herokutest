@@ -9,13 +9,36 @@ const INDEX = path.join(__dirname, 'index.html');
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+  //.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+  .listen(PORT, startup);
 
 const io = socketIO(server);
 
+var clicks = 0;
+
 io.on('connection', (socket) => {
   console.log('Client connected');
-  socket.on('disconnect', () => console.log('Client disconnected'));
+  //socket.on('disconnect', () => socket.on('disconnect', () => ););
+  socket.on('disconnect', disconnect);
+  
+  socket.on("click", function(){
+  	clicks++;
+  	console.log("clicky "+clicks+" from "+socket.id);
+  	io.emit('tellClicks', {num: clicks});		//this is wrapping the value in an object. Useful if we want to send more than one value
+  });
 });
 
+
+//spit out the time once every 1000 milis
 setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+
+
+function startup(){
+	console.log(`Listening on ${ PORT }`);
+}
+
+function disconnect(){
+	console.log('Client disconnected')
+}
+
+

@@ -2,6 +2,9 @@
   <body>
     <p id='server-time'>hello</p>
 
+	<p id='num-clicks'></p>
+	
+	<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 
     <script src="/socket.io/socket.io.js"></script>
     
@@ -10,9 +13,26 @@
       var socket = io();
       var element = document.getElementById('server-time');
       
+      var $clickElement = $("#num-clicks");		//$ variables is a common way to denote jquery
+      
       socket.on('time', function(timeString) {
       	element.innerHTML = 'Server time: ' + timeString;
       });
+      
+      socket.on('tellClicks', function(data) {
+      	console.log("got clicks "+data.num);
+      	$clickElement.html(data.num);
+      });
+      
+      $("body").click(function() {
+      	console.log("click");
+      	
+      	socket.emit('click');
+      	
+      });
+      
+      
+      
     </script>
     
     
